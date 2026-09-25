@@ -1,0 +1,23 @@
+{
+  "skill_name": "apply-jev",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We run a marketplace and have a moderation queue for new listings. Right now a GPT prompt returns JSON like {\"prohibited\": true, \"reason\": \"...\"} and we act on it. It's slow (2-3s), costs add up at 40k listings/day, and it flip-flops on borderline items. Someone mentioned Jev / TypeSafe. Should we use it? If so how would you set it up, and what should stay on the LLM?",
+      "expected_output": "A clear verdict (fit, with the generation of 'reason' text staying on an LLM or dropped), a decomposed question bundle (several Nouls for specific prohibited categories, a Score for condition/severity or a Choice with a none option), an explicit threshold policy with a review band, an evaluation plan with labelled listings and adversarial checks, and a note about pinning the model version. Should not propose Jev writing the reason text. Should mention keeping deterministic checks (price sanity, banned-word lists) in code.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Can I point Cursor / my coding agent at jev-latest instead of Claude so it's faster and cheaper? And separately, would Jev be good for parsing dates out of our contract PDFs and telling us which contract expires first?",
+      "expected_output": "Explains plainly that Jev cannot replace the LLM behind a coding agent (no generation, no tool loop) and redirects to where it fits inside one (gating tool calls, judging outputs). For the dates: PDFs must be OCR'd to text first; Jev should read date parts as Choices with none/out_of_range options and code should assemble dates and do the comparison; the comparison itself is not a Jev job. Should not invent request fields.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Here is our RAG pipeline: user question -> embedding search returns top 20 chunks -> we stuff all 20 into the LLM prompt -> answer. Users complain about hallucinated answers when the docs don't actually cover the question. Review this and tell me where, if anywhere, a decision model like Jev would help, and what I'd have to change.",
+      "expected_output": "An applicability table or equivalent: a per-chunk relevance question (Noul or Score) to filter/rerank before the LLM; a 'does the retrieved material contain an answer at all' Noul so the system can decline; a post-answer verification Choice (supported / unsupported / declined) with a review or retry path. Specifies what stays in code (top-k, thresholds, decline behaviour), warns about state size / context rot when batching chunks, and recommends evaluating on labelled questions before setting thresholds. Vendor-neutral on how to call it.",
+      "files": []
+    }
+  ]
+}
